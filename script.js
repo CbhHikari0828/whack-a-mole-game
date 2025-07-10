@@ -13,9 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 老鼠类型 - 调整概率使得更容易出现各种类型
     const moleTypes = [
-        { type: 'normal', score: 1, time: { min: 800, max: 1200 }, chance: 0.4 },
+        { type: 'normal', score: 1, time: { min: 800, max: 1200 }, chance: 0.5 },
         { type: 'fast', score: 2, time: { min: 400, max: 700 }, chance: 0.3 },
-        { type: 'slow', score: 1, time: { min: 1300, max: 1800 }, chance: 0.15 },
+        { type: 'bomb', score: -10, time: { min: 900, max: 1400 }, chance: 0.05 },
         { type: 'golden', score: 5, time: { min: 500, max: 800 }, chance: 0.15 }
     ];
     
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const typeCounter = {
         normal: 0,
         fast: 0,
-        slow: 0,
+        bomb: 0,
         golden: 0
     };
 
@@ -72,8 +72,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // 显示分数弹出
     function showScorePopup(x, y, scoreValue) {
         const popup = document.createElement('div');
-        popup.textContent = `+${scoreValue}`;
+        popup.textContent = scoreValue > 0 ? `+${scoreValue}` : `${scoreValue}`;
         popup.className = 'score-popup';
+        
+        // 如果是负分，添加负分样式
+        if (scoreValue < 0) {
+            popup.classList.add('negative');
+        }
+        
         popup.style.left = `${x}px`;
         popup.style.top = `${y}px`;
         document.body.appendChild(popup);
@@ -81,6 +87,22 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             popup.remove();
         }, 1000);
+    }
+    
+    // 显示爆炸效果
+    function showExplosion(hole) {
+        const explosion = document.createElement('div');
+        explosion.className = 'explosion';
+        hole.appendChild(explosion);
+        
+        // 添加爆炸音效
+        const explosionSound = new Audio('data:audio/mp3;base64,//OEZAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAAeAAAgIAAICAgICBAQEBAQHh4eHh4eKSkpKSk3NTU1NTVCQkJCQkJQUFBQUFBdXV1dXV1qampqanZ2dnZ2doODg4ODg5GRkZGRnZ2dnZ2dqqqqqqq2tra2trLCwsLCwszMzMzMzNnZ2dnZ2eXl5eXl8vLy8vLy//////8AAAA5TEFNRTMuOThyAm4AAAAALkUAABRGJASMTQAARgAACCAjEtHZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//NkZAASJRVxYcyYAEkw9nBVPSAAmVTHVp9NCsJsFUJ/D/AiIpABBB/4gge8EKQgG8AAAAAAf+KUO/BA7/3w/JBjicD/Q7//cqBw/9vChBEHYKnGwhg6ywFJAVgiGIVAJUOGCArBAFihwgLYIF//WY/lTn+v8j0XB/BBqECtDtA9xEIOp/+a////8eRPD6uY5Zme6ywftvj9GJYytKh9ATkISPj6XB+KvmPUJO3vUIsmi/kFhO/qyckJnxjcCh0Y3lpeWMVkgX+HyPWQXyCZ/+UJCZjTuNu7/P/ny8TEShmp8/M//OUZAcV7d0u81mAADug9m6hmMAFly8K54Lzxn3b/GcsxgDADC4lKX4Rl8TAgHATAMKgoCcPAAAqAgjIfggEQTgbKCMOfDAZAXCIMA/IAZAYAotAPBQC0vCwEwhCYC4sWwE2hJjf/3vXer///////////1///dfpdfvQfe4GxYAY+QBw5jXE4ypfQ5cCIOFYQJhx2YbihNAxC+IrDBu5pDIMzDYPjDQNjLgxDrEDDwsjZMaDDYXjUA1zWjFQsB+ZQDYYKGBocSmBwMGCxIYEB5g2BGIQIZAPJgSAlcRhCEEWCXXe6crzX+3/////9///7////1vf/////6tsTEFNRTMuOTguMgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//MUZAgJbAUR7dBAAA04AjebkEAA');
+        explosionSound.volume = 0.5;
+        explosionSound.play();
+        
+        setTimeout(() => {
+            explosion.remove();
+        }, 500);
     }
 
     // 老鼠眼睛动画
@@ -129,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // 记录老鼠类型出现次数
         typeCounter[moleType.type]++;
-        console.log(`老鼠类型统计: 普通=${typeCounter.normal}, 快速=${typeCounter.fast}, 慢速=${typeCounter.slow}, 金色=${typeCounter.golden}`);
+        console.log(`老鼠类型统计: 普通=${typeCounter.normal}, 快速=${typeCounter.fast}, 炸弹=${typeCounter.bomb}, 金色=${typeCounter.golden}`);
         
         // 重置老鼠样式
         mole.className = 'mole';
@@ -206,12 +228,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
         setTimeout(() => {
             const mole3 = document.querySelectorAll('.mole')[2];
-            mole3.className = 'mole slow';
+            mole3.className = 'mole bomb';
             mole3.classList.add('active');
             animateEyes(mole3, true);
             
             setTimeout(() => {
-                mole3.classList.remove('active', 'slow');
+                mole3.classList.remove('active', 'bomb');
                 animateEyes(mole3, false);
             }, 1500);
         }, 2500);
@@ -242,12 +264,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(timer);
                 gameActive = false;
                 startBtn.disabled = false;
-                alert(`游戏结束！您的得分是：${score}分\n\n老鼠出现统计:\n普通老鼠: ${typeCounter.normal}只\n快速老鼠: ${typeCounter.fast}只\n慢速老鼠: ${typeCounter.slow}只\n黄金老鼠: ${typeCounter.golden}只`);
+                alert(`游戏结束！您的得分是：${score}分\n\n老鼠出现统计:\n普通老鼠: ${typeCounter.normal}只\n快速老鼠: ${typeCounter.fast}只\n炸弹老鼠: ${typeCounter.bomb}只\n黄金老鼠: ${typeCounter.golden}只`);
                 
                 // 清除所有活跃的老鼠
                 moles.forEach(mole => {
                     mole.classList.remove('active');
-                    mole.classList.remove('golden', 'fast', 'slow', 'normal');
+                    mole.classList.remove('golden', 'fast', 'bomb', 'normal');
                     animateEyes(mole, false);
                 });
             }
@@ -270,6 +292,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const y = e.clientY - 20;
             showScorePopup(x, y, moleScore);
             
+            // 如果是炸弹老鼠，显示爆炸效果
+            if (moleType === 'bomb') {
+                showExplosion(this.parentNode);
+            }
+            
             // 添加击打效果
             this.classList.add('hit');
             this.classList.remove('active');
@@ -278,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.parentNode.classList.add('hit');
             setTimeout(() => {
                 this.parentNode.classList.remove('hit');
-                this.classList.remove('hit', 'golden', 'fast', 'slow', 'normal');
+                this.classList.remove('hit', 'golden', 'fast', 'bomb', 'normal');
             }, 300);
         }
     }

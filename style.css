@@ -211,17 +211,56 @@ h1 {
     transition: top 0.15s !important;
 }
 
-/* 慢速老鼠 */
-.mole.slow::before {
-    background-color: #5e86a0;
+/* 炸弹老鼠 */
+.mole.bomb::before {
+    background-color: #333333;
+    box-shadow: 0 0 5px #ff0000;
 }
 
-.mole.slow .ear-left, .mole.slow .ear-right {
-    background-color: #5e86a0;
+.mole.bomb .ear-left, .mole.bomb .ear-right {
+    background-color: #333333;
 }
 
-.mole.slow {
-    transition: top 0.5s !important;
+.mole.bomb .eye-left, .mole.bomb .eye-right {
+    background-color: #ff0000;
+}
+
+.mole.bomb .nose {
+    background-color: #ff0000;
+    animation: blink 1s infinite;
+}
+
+.mole.bomb .mouth {
+    background-color: #ff0000;
+}
+
+/* 炸弹老鼠闪烁效果 */
+@keyframes blink {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+}
+
+/* 爆炸效果 */
+.explosion {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, #ff4500, #ff0000);
+    border-radius: 50%;
+    z-index: 10;
+    animation: explode 0.5s forwards;
+}
+
+@keyframes explode {
+    0% {
+        transform: scale(0.5);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
 }
 
 /* 老鼠被打中的效果 */
@@ -296,8 +335,8 @@ h1 {
     background-color: #ff8a5e;
 }
 
-.mole-icon.slow {
-    background-color: #5e86a0;
+.mole-icon.bomb {
+    background-color: #333333;
 }
 
 .mole-icon.golden {
@@ -316,6 +355,10 @@ h1 {
     pointer-events: none;
     animation: float-up 1s forwards;
     z-index: 10;
+}
+
+.score-popup.negative {
+    color: #ff0000;
 }
 
 @keyframes float-up {
