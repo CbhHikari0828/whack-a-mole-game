@@ -61,6 +61,42 @@ document.addEventListener('DOMContentLoaded', () => {
             popup.remove();
         }, 1000);
     }
+
+    // 老鼠眼睛动画
+    function animateEyes(mole, isActive) {
+        const pupils = mole.querySelectorAll('.pupil-left, .pupil-right');
+        
+        if (isActive) {
+            // 随机眼球位置
+            pupils.forEach(pupil => {
+                const randomX = Math.random() * 30;
+                const randomY = Math.random() * 30;
+                pupil.style.left = `${randomX}%`;
+                pupil.style.top = `${randomY}%`;
+            });
+            
+            // 持续眼球运动
+            const eyeInterval = setInterval(() => {
+                if (!mole.classList.contains('active')) {
+                    clearInterval(eyeInterval);
+                    return;
+                }
+                
+                pupils.forEach(pupil => {
+                    const randomX = Math.random() * 30;
+                    const randomY = Math.random() * 30;
+                    pupil.style.left = `${randomX}%`;
+                    pupil.style.top = `${randomY}%`;
+                });
+            }, 800);
+        } else {
+            // 重置眼球位置
+            pupils.forEach(pupil => {
+                pupil.style.left = '30%';
+                pupil.style.top = '30%';
+            });
+        }
+    }
     
     // 让地鼠出现
     function popUp() {
@@ -86,11 +122,14 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // 老鼠出现
         mole.classList.add('active');
+        animateEyes(mole, true);
         
         // 老鼠消失
         setTimeout(() => {
             mole.classList.remove('active');
             mole.classList.remove(moleType.type);
+            animateEyes(mole, false);
+            
             if (gameActive) {
                 // 随机间隔后再出现下一只
                 setTimeout(() => {
@@ -130,6 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 moles.forEach(mole => {
                     mole.classList.remove('active');
                     mole.classList.remove('golden', 'fast', 'slow');
+                    animateEyes(mole, false);
                 });
             }
         }, 1000);
@@ -151,12 +191,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const y = e.clientY - 20;
             showScorePopup(x, y, moleScore);
             
-            this.classList.remove('active', 'golden', 'fast', 'slow');
-            
             // 添加击打效果
+            this.classList.add('hit');
+            this.classList.remove('active', 'golden', 'fast', 'slow');
+            animateEyes(this, false);
+            
             this.parentNode.classList.add('hit');
             setTimeout(() => {
                 this.parentNode.classList.remove('hit');
+                this.classList.remove('hit');
             }, 300);
         }
     }

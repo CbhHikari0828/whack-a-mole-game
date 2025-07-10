@@ -58,32 +58,174 @@ h1 {
     transition: background-color 0.3s;
 }
 
+/* 卡通老鼠基本样式 */
 .mole {
     position: absolute;
     top: 100%;
     width: 100%;
     height: 70%;
-    background-color: #603813;
-    border-radius: 50%;
-    transition: top 0.3s;
     cursor: pointer;
+    transition: top 0.3s;
 }
 
 .mole.active {
     top: 30%;
 }
 
-.mole.golden {
+/* 卡通老鼠的脸 */
+.mole::before {
+    content: '';
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    background-color: #86695e;
+    border-radius: 50%;
+    top: 10%;
+    left: 10%;
+    z-index: 1;
+}
+
+/* 卡通老鼠的耳朵 */
+.mole::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border-radius: 50% 50% 0 0;
+    top: -30%;
+    left: 0;
+    z-index: 0;
+}
+
+/* 老鼠的左耳 */
+.mole .ear-left {
+    position: absolute;
+    width: 40%;
+    height: 40%;
+    background-color: #86695e;
+    border-radius: 50%;
+    top: -20%;
+    left: 5%;
+    z-index: 0;
+}
+
+/* 老鼠的右耳 */
+.mole .ear-right {
+    position: absolute;
+    width: 40%;
+    height: 40%;
+    background-color: #86695e;
+    border-radius: 50%;
+    top: -20%;
+    right: 5%;
+    z-index: 0;
+}
+
+/* 老鼠的眼睛 */
+.mole .eye-left {
+    position: absolute;
+    width: 20%;
+    height: 20%;
+    background-color: white;
+    border-radius: 50%;
+    top: 30%;
+    left: 25%;
+    z-index: 2;
+}
+
+.mole .eye-right {
+    position: absolute;
+    width: 20%;
+    height: 20%;
+    background-color: white;
+    border-radius: 50%;
+    top: 30%;
+    right: 25%;
+    z-index: 2;
+}
+
+/* 眼球 */
+.mole .pupil-left, .mole .pupil-right {
+    position: absolute;
+    width: 40%;
+    height: 40%;
+    background-color: black;
+    border-radius: 50%;
+    top: 30%;
+    left: 30%;
+    z-index: 3;
+}
+
+/* 老鼠的鼻子 */
+.mole .nose {
+    position: absolute;
+    width: 20%;
+    height: 15%;
+    background-color: #ff9999;
+    border-radius: 50%;
+    top: 55%;
+    left: 40%;
+    z-index: 2;
+}
+
+/* 老鼠的嘴 */
+.mole .mouth {
+    position: absolute;
+    width: 30%;
+    height: 10%;
+    background-color: #5e4c47;
+    border-radius: 0 0 50% 50%;
+    top: 65%;
+    left: 35%;
+    z-index: 2;
+}
+
+/* 金色老鼠 */
+.mole.golden::before {
     background-color: #FFD700;
     box-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700;
+}
+
+.mole.golden .ear-left, .mole.golden .ear-right {
+    background-color: #FFD700;
+}
+
+.mole.golden .nose {
+    background-color: #ff5252;
+}
+
+/* 快速老鼠 */
+.mole.fast::before {
+    background-color: #ff8a5e;
+}
+
+.mole.fast .ear-left, .mole.fast .ear-right {
+    background-color: #ff8a5e;
 }
 
 .mole.fast {
     transition: top 0.15s;
 }
 
+/* 慢速老鼠 */
+.mole.slow::before {
+    background-color: #5e86a0;
+}
+
+.mole.slow .ear-left, .mole.slow .ear-right {
+    background-color: #5e86a0;
+}
+
 .mole.slow {
     transition: top 0.5s;
+}
+
+/* 老鼠被打中的效果 */
+.mole.hit::before {
+    transform: scaleY(0.5);
+    background-color: #ff5252;
+    transition: transform 0.2s, background-color 0.2s;
 }
 
 /* 老鼠类型展示样式 */
@@ -101,25 +243,58 @@ h1 {
 }
 
 .mole-icon {
+    position: relative;
     width: 30px;
     height: 30px;
     border-radius: 50%;
     margin-right: 5px;
-    background-color: #603813;
+    background-color: #86695e;
+    overflow: hidden;
+}
+
+.mole-icon::before {
+    content: '';
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    background-color: inherit;
+    border-radius: 50%;
+    top: 10%;
+    left: 10%;
+}
+
+.mole-icon .mini-ear-left {
+    position: absolute;
+    width: 40%;
+    height: 40%;
+    background-color: inherit;
+    border-radius: 50%;
+    top: -10%;
+    left: 5%;
+    z-index: 0;
+}
+
+.mole-icon .mini-ear-right {
+    position: absolute;
+    width: 40%;
+    height: 40%;
+    background-color: inherit;
+    border-radius: 50%;
+    top: -10%;
+    right: 5%;
+    z-index: 0;
 }
 
 .mole-icon.normal {
-    background-color: #603813;
+    background-color: #86695e;
 }
 
 .mole-icon.fast {
-    background-color: #603813;
-    border: 2px solid #ff0000;
+    background-color: #ff8a5e;
 }
 
 .mole-icon.slow {
-    background-color: #603813;
-    border: 2px solid #0000ff;
+    background-color: #5e86a0;
 }
 
 .mole-icon.golden {
