@@ -91,15 +91,61 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 显示爆炸效果
     function showExplosion(hole) {
+        // 创建爆炸效果元素
         const explosion = document.createElement('div');
         explosion.className = 'explosion';
         hole.appendChild(explosion);
         
+        // 震动效果
+        const originalPosition = window.scrollY;
+        const intensity = 5;
+        const duration = 500; // 震动持续时间 (毫秒)
+        const startTime = Date.now();
+        
         // 添加爆炸音效
         const explosionSound = new Audio('data:audio/mp3;base64,//OEZAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAAeAAAgIAAICAgICBAQEBAQHh4eHh4eKSkpKSk3NTU1NTVCQkJCQkJQUFBQUFBdXV1dXV1qampqanZ2dnZ2doODg4ODg5GRkZGRnZ2dnZ2dqqqqqqq2tra2trLCwsLCwszMzMzMzNnZ2dnZ2eXl5eXl8vLy8vLy//////8AAAA5TEFNRTMuOThyAm4AAAAALkUAABRGJASMTQAARgAACCAjEtHZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//NkZAASJRVxYcyYAEkw9nBVPSAAmVTHVp9NCsJsFUJ/D/AiIpABBB/4gge8EKQgG8AAAAAAf+KUO/BA7/3w/JBjicD/Q7//cqBw/9vChBEHYKnGwhg6ywFJAVgiGIVAJUOGCArBAFihwgLYIF//WY/lTn+v8j0XB/BBqECtDtA9xEIOp/+a////8eRPD6uY5Zme6ywftvj9GJYytKh9ATkISPj6XB+KvmPUJO3vUIsmi/kFhO/qyckJnxjcCh0Y3lpeWMVkgX+HyPWQXyCZ/+UJCZjTuNu7/P/ny8TEShmp8/M//OUZAcV7d0u81mAADug9m6hmMAFly8K54Lzxn3b/GcsxgDADC4lKX4Rl8TAgHATAMKgoCcPAAAqAgjIfggEQTgbKCMOfDAZAXCIMA/IAZAYAotAPBQC0vCwEwhCYC4sWwE2hJjf/3vXer///////////1///dfpdfvQfe4GxYAY+QBw5jXE4ypfQ5cCIOFYQJhx2YbihNAxC+IrDBu5pDIMzDYPjDQNjLgxDrEDDwsjZMaDDYXjUA1zWjFQsB+ZQDYYKGBocSmBwMGCxIYEB5g2BGIQIZAPJgSAlcRhCEEWCXXe6crzX+3/////9///7////1vf/////6tsTEFNRTMuOTguMgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//MUZAgJbAUR7dBAAA04AjebkEAA');
-        explosionSound.volume = 0.5;
+        explosionSound.volume = 0.6;
         explosionSound.play();
         
+        // 屏幕震动效果
+        function shake() {
+            const elapsed = Date.now() - startTime;
+            if (elapsed < duration) {
+                // 随机方向震动
+                const randomX = Math.random() * intensity * 2 - intensity;
+                const randomY = Math.random() * intensity * 2 - intensity;
+                window.scrollBy(randomX, randomY);
+                requestAnimationFrame(shake);
+            } else {
+                // 恢复原始位置
+                window.scrollTo({
+                    top: originalPosition,
+                    behavior: 'auto'
+                });
+            }
+        }
+        
+        // 开始震动
+        requestAnimationFrame(shake);
+        
+        // 闪烁红色背景
+        const flashOverlay = document.createElement('div');
+        flashOverlay.style.position = 'fixed';
+        flashOverlay.style.top = '0';
+        flashOverlay.style.left = '0';
+        flashOverlay.style.width = '100%';
+        flashOverlay.style.height = '100%';
+        flashOverlay.style.backgroundColor = 'rgba(255, 0, 0, 0.2)';
+        flashOverlay.style.zIndex = '9999';
+        flashOverlay.style.pointerEvents = 'none';
+        document.body.appendChild(flashOverlay);
+        
+        // 移除红色背景闪烁
+        setTimeout(() => {
+            flashOverlay.remove();
+        }, 200);
+        
+        // 移除爆炸元素
         setTimeout(() => {
             explosion.remove();
         }, 500);

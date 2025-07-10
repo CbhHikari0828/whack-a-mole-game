@@ -211,34 +211,127 @@ h1 {
     transition: top 0.15s !important;
 }
 
-/* 炸弹老鼠 */
+/* 炸弹老鼠 - 完全重写 */
 .mole.bomb::before {
-    background-color: #333333;
-    box-shadow: 0 0 5px #ff0000;
+    content: '';
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    background-color: #222222;
+    border-radius: 50%;
+    top: 10%;
+    left: 10%;
+    z-index: 1;
+    border: 3px solid #ff0000;
+    box-shadow: 0 0 10px #ff0000, inset 0 0 8px rgba(255, 0, 0, 0.8);
+    animation: pulsate 0.8s infinite alternate;
+}
+
+@keyframes pulsate {
+    0% { box-shadow: 0 0 10px #ff0000, inset 0 0 8px rgba(255, 0, 0, 0.8); }
+    100% { box-shadow: 0 0 15px #ff4500, inset 0 0 12px rgba(255, 69, 0, 0.8); }
 }
 
 .mole.bomb .ear-left, .mole.bomb .ear-right {
-    background-color: #333333;
+    position: absolute;
+    width: 40%;
+    height: 40%;
+    background-color: #222222;
+    border-radius: 50%;
+    border: 2px solid #ff0000;
+    z-index: 0;
+}
+
+.mole.bomb .ear-left {
+    top: -20%;
+    left: 5%;
+}
+
+.mole.bomb .ear-right {
+    top: -20%;
+    right: 5%;
 }
 
 .mole.bomb .eye-left, .mole.bomb .eye-right {
+    position: absolute;
+    width: 20%;
+    height: 20%;
     background-color: #ff0000;
+    border-radius: 50%;
+    z-index: 2;
+    animation: blink 1.2s infinite alternate;
+}
+
+.mole.bomb .eye-left {
+    top: 30%;
+    left: 25%;
+}
+
+.mole.bomb .eye-right {
+    top: 30%;
+    right: 25%;
+}
+
+.mole.bomb .pupil-left, .mole.bomb .pupil-right {
+    position: absolute;
+    width: 40%;
+    height: 40%;
+    background-color: #000000;
+    border-radius: 50%;
+    top: 30%;
+    left: 30%;
+    z-index: 3;
 }
 
 .mole.bomb .nose {
+    position: absolute;
+    width: 20%;
+    height: 15%;
     background-color: #ff0000;
-    animation: blink 1s infinite;
+    border-radius: 50%;
+    top: 55%;
+    left: 40%;
+    z-index: 2;
+    animation: blink 1s infinite alternate;
 }
 
 .mole.bomb .mouth {
+    position: absolute;
+    width: 40%;
+    height: 10%;
     background-color: #ff0000;
+    border-radius: 0 0 50% 50%;
+    top: 65%;
+    left: 30%;
+    z-index: 2;
+}
+
+/* 炸弹导火线 */
+.mole.bomb::after {
+    content: '';
+    position: absolute;
+    width: 15%;
+    height: 30%;
+    background: linear-gradient(to bottom, #ff0, #f80, #f00);
+    top: -20%;
+    left: 45%;
+    z-index: 4;
+    border-radius: 10px;
+    transform-origin: bottom;
+    transform: rotate(0deg);
+    animation: sway 1s infinite alternate;
+}
+
+@keyframes sway {
+    0% { transform: rotate(-15deg); }
+    100% { transform: rotate(15deg); }
 }
 
 /* 炸弹老鼠闪烁效果 */
 @keyframes blink {
-    0% { opacity: 0.5; }
+    0% { opacity: 0.7; }
     50% { opacity: 1; }
-    100% { opacity: 0.5; }
+    100% { opacity: 0.7; }
 }
 
 /* 爆炸效果 */
@@ -246,19 +339,24 @@ h1 {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle, #ff4500, #ff0000);
+    background: radial-gradient(circle, #ffdf00, #ff8c00, #ff4500, #ff0000);
     border-radius: 50%;
     z-index: 10;
+    opacity: 0.9;
     animation: explode 0.5s forwards;
 }
 
 @keyframes explode {
     0% {
         transform: scale(0.5);
-        opacity: 1;
+        opacity: 0.9;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
     }
     100% {
-        transform: scale(1.5);
+        transform: scale(2);
         opacity: 0;
     }
 }
@@ -336,7 +434,21 @@ h1 {
 }
 
 .mole-icon.bomb {
-    background-color: #333333;
+    background-color: #222222;
+    border: 1px solid #ff0000;
+    box-shadow: 0 0 3px #ff0000;
+}
+
+.mole-icon.bomb::after {
+    content: '';
+    position: absolute;
+    width: 15%;
+    height: 30%;
+    background: linear-gradient(to bottom, #ff0, #f80, #f00);
+    top: -15%;
+    left: 45%;
+    z-index: 3;
+    border-radius: 10px;
 }
 
 .mole-icon.golden {
@@ -359,6 +471,9 @@ h1 {
 
 .score-popup.negative {
     color: #ff0000;
+    font-weight: bold;
+    text-shadow: 0 0 3px #000;
+    background-color: rgba(0, 0, 0, 0.8);
 }
 
 @keyframes float-up {
