@@ -73,6 +73,84 @@ h1 {
     top: 30%;
 }
 
+.mole.golden {
+    background-color: #FFD700;
+    box-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700;
+}
+
+.mole.fast {
+    transition: top 0.15s;
+}
+
+.mole.slow {
+    transition: top 0.5s;
+}
+
+/* 老鼠类型展示样式 */
+.mole-types {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.mole-type {
+    display: flex;
+    align-items: center;
+    margin: 5px;
+}
+
+.mole-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 5px;
+    background-color: #603813;
+}
+
+.mole-icon.normal {
+    background-color: #603813;
+}
+
+.mole-icon.fast {
+    background-color: #603813;
+    border: 2px solid #ff0000;
+}
+
+.mole-icon.slow {
+    background-color: #603813;
+    border: 2px solid #0000ff;
+}
+
+.mole-icon.golden {
+    background-color: #FFD700;
+    box-shadow: 0 0 5px #FFD700;
+}
+
+.score-popup {
+    position: absolute;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 5px 10px;
+    border-radius: 20px;
+    pointer-events: none;
+    animation: float-up 1s forwards;
+    z-index: 10;
+}
+
+@keyframes float-up {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+}
+
 #start-btn {
     background-color: #4CAF50;
     color: white;
