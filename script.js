@@ -11,13 +11,21 @@ document.addEventListener('DOMContentLoaded', () => {
     let gameActive = false;
     let lastHole;
     
-    // 老鼠类型
+    // 老鼠类型 - 调整概率使得更容易出现各种类型
     const moleTypes = [
-        { type: 'normal', score: 1, time: { min: 800, max: 1200 }, chance: 0.7 },
-        { type: 'fast', score: 2, time: { min: 400, max: 700 }, chance: 0.2 },
-        { type: 'slow', score: 1, time: { min: 1300, max: 1800 }, chance: 0.05 },
-        { type: 'golden', score: 5, time: { min: 500, max: 800 }, chance: 0.05 }
+        { type: 'normal', score: 1, time: { min: 800, max: 1200 }, chance: 0.4 },
+        { type: 'fast', score: 2, time: { min: 400, max: 700 }, chance: 0.3 },
+        { type: 'slow', score: 1, time: { min: 1300, max: 1800 }, chance: 0.15 },
+        { type: 'golden', score: 5, time: { min: 500, max: 800 }, chance: 0.15 }
     ];
+    
+    // 用于调试的计数器
+    const typeCounter = {
+        normal: 0,
+        fast: 0,
+        slow: 0,
+        golden: 0
+    };
 
     // 随机选择一个地洞
     function randomHole() {
@@ -33,8 +41,21 @@ document.addEventListener('DOMContentLoaded', () => {
         return idx;
     }
     
+    // 强制选择一个特定类型的老鼠 - 用于确保所有类型都出现
+    function forceMoleType() {
+        // 找出出现次数最少的类型
+        const minType = Object.entries(typeCounter).sort((a, b) => a[1] - b[1])[0][0];
+        return moleTypes.find(type => type.type === minType);
+    }
+    
     // 随机选择一个老鼠类型
     function getRandomMoleType() {
+        // 每10次强制平衡一下各类型老鼠
+        const totalMoles = Object.values(typeCounter).reduce((sum, count) => sum + count, 0);
+        if (totalMoles > 0 && totalMoles % 10 === 0) {
+            return forceMoleType();
+        }
+        
         const rand = Math.random();
         let cumulativeChance = 0;
         
@@ -106,28 +127,32 @@ document.addEventListener('DOMContentLoaded', () => {
         const mole = moles[idx];
         const moleType = getRandomMoleType();
         
+        // 记录老鼠类型出现次数
+        typeCounter[moleType.type]++;
+        console.log(`老鼠类型统计: 普通=${typeCounter.normal}, 快速=${typeCounter.fast}, 慢速=${typeCounter.slow}, 金色=${typeCounter.golden}`);
+        
         // 重置老鼠样式
         mole.className = 'mole';
         
-        // 设置老鼠类型
-        if (moleType.type !== 'normal') {
-            mole.classList.add(moleType.type);
-        }
+        // 设置老鼠类型并确保应用正确的CSS类
+        mole.classList.add(moleType.type);
         
         // 设置数据属性用于计分
         mole.dataset.score = moleType.score;
+        mole.dataset.type = moleType.type;
         
         // 老鼠出现时间
         const time = Math.random() * (moleType.time.max - moleType.time.min) + moleType.time.min;
         
         // 老鼠出现
-        mole.classList.add('active');
-        animateEyes(mole, true);
+        setTimeout(() => {
+            mole.classList.add('active');
+            animateEyes(mole, true);
+        }, 10);
         
         // 老鼠消失
         setTimeout(() => {
             mole.classList.remove('active');
-            mole.classList.remove(moleType.type);
             animateEyes(mole, false);
             
             if (gameActive) {
@@ -145,14 +170,68 @@ document.addEventListener('DOMContentLoaded', () => {
         timeLeft = 60;
         gameActive = true;
         
+        // 重置类型计数器
+        Object.keys(typeCounter).forEach(key => {
+            typeCounter[key] = 0;
+        });
+        
         scoreDisplay.textContent = score;
         timeDisplay.textContent = timeLeft;
         startBtn.disabled = true;
         
-        // 同时出现多只老鼠
-        setTimeout(() => popUp(), 500);
-        setTimeout(() => popUp(), 1000);
-        setTimeout(() => popUp(), 1500);
+        // 确保每种类型的老鼠都至少出现一次
+        setTimeout(() => {
+            const mole1 = document.querySelector('.mole');
+            mole1.className = 'mole normal';
+            mole1.classList.add('active');
+            animateEyes(mole1, true);
+            
+            setTimeout(() => {
+                mole1.classList.remove('active', 'normal');
+                animateEyes(mole1, false);
+            }, 1000);
+        }, 500);
+        
+        setTimeout(() => {
+            const mole2 = document.querySelectorAll('.mole')[1];
+            mole2.className = 'mole fast';
+            mole2.classList.add('active');
+            animateEyes(mole2, true);
+            
+            setTimeout(() => {
+                mole2.classList.remove('active', 'fast');
+                animateEyes(mole2, false);
+            }, 800);
+        }, 1500);
+        
+        setTimeout(() => {
+            const mole3 = document.querySelectorAll('.mole')[2];
+            mole3.className = 'mole slow';
+            mole3.classList.add('active');
+            animateEyes(mole3, true);
+            
+            setTimeout(() => {
+                mole3.classList.remove('active', 'slow');
+                animateEyes(mole3, false);
+            }, 1500);
+        }, 2500);
+        
+        setTimeout(() => {
+            const mole4 = document.querySelectorAll('.mole')[3];
+            mole4.className = 'mole golden';
+            mole4.classList.add('active');
+            animateEyes(mole4, true);
+            
+            setTimeout(() => {
+                mole4.classList.remove('active', 'golden');
+                animateEyes(mole4, false);
+                
+                // 开始随机生成老鼠
+                setTimeout(() => popUp(), 500);
+                setTimeout(() => popUp(), 1200);
+                setTimeout(() => popUp(), 1800);
+            }, 1000);
+        }, 4000);
         
         // 启动倒计时
         timer = setInterval(() => {
@@ -163,12 +242,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(timer);
                 gameActive = false;
                 startBtn.disabled = false;
-                alert(`游戏结束！您的得分是：${score}分`);
+                alert(`游戏结束！您的得分是：${score}分\n\n老鼠出现统计:\n普通老鼠: ${typeCounter.normal}只\n快速老鼠: ${typeCounter.fast}只\n慢速老鼠: ${typeCounter.slow}只\n黄金老鼠: ${typeCounter.golden}只`);
                 
                 // 清除所有活跃的老鼠
                 moles.forEach(mole => {
                     mole.classList.remove('active');
-                    mole.classList.remove('golden', 'fast', 'slow');
+                    mole.classList.remove('golden', 'fast', 'slow', 'normal');
                     animateEyes(mole, false);
                 });
             }
@@ -182,24 +261,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (this.classList.contains('active')) {
             // 获取老鼠分值
             const moleScore = parseInt(this.dataset.score || 1);
+            const moleType = this.dataset.type || 'normal';
             score += moleScore;
             scoreDisplay.textContent = score;
             
             // 显示分数弹出
-            const rect = this.getBoundingClientRect();
             const x = e.clientX;
             const y = e.clientY - 20;
             showScorePopup(x, y, moleScore);
             
             // 添加击打效果
             this.classList.add('hit');
-            this.classList.remove('active', 'golden', 'fast', 'slow');
+            this.classList.remove('active');
             animateEyes(this, false);
             
             this.parentNode.classList.add('hit');
             setTimeout(() => {
                 this.parentNode.classList.remove('hit');
-                this.classList.remove('hit');
+                this.classList.remove('hit', 'golden', 'fast', 'slow', 'normal');
             }, 300);
         }
     }

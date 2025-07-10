@@ -72,7 +72,8 @@ h1 {
     top: 30%;
 }
 
-/* 卡通老鼠的脸 */
+/* 卡通老鼠的脸 - 普通老鼠 */
+.mole.normal::before,
 .mole::before {
     content: '';
     position: absolute;
@@ -98,7 +99,8 @@ h1 {
     z-index: 0;
 }
 
-/* 老鼠的左耳 */
+/* 老鼠的左耳 - 普通老鼠 */
+.mole.normal .ear-left,
 .mole .ear-left {
     position: absolute;
     width: 40%;
@@ -110,7 +112,8 @@ h1 {
     z-index: 0;
 }
 
-/* 老鼠的右耳 */
+/* 老鼠的右耳 - 普通老鼠 */
+.mole.normal .ear-right,
 .mole .ear-right {
     position: absolute;
     width: 40%;
@@ -205,7 +208,7 @@ h1 {
 }
 
 .mole.fast {
-    transition: top 0.15s;
+    transition: top 0.15s !important;
 }
 
 /* 慢速老鼠 */
@@ -218,7 +221,7 @@ h1 {
 }
 
 .mole.slow {
-    transition: top 0.5s;
+    transition: top 0.5s !important;
 }
 
 /* 老鼠被打中的效果 */
